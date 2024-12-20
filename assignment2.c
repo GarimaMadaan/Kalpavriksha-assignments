@@ -5,7 +5,7 @@
 #define FILENAME "crud.txt"
 
 typedef struct {
-    int id;
+    char id[15];
     char name[200];
     int age;
 } User;
@@ -59,12 +59,12 @@ void addUser() {
         return;
     }
     printf("Enter User ID: ");
-    scanf("%d", &user.id);
+    scanf("%s", user.id);
     printf("Enter Name: ");
     scanf(" %[^\n]s", user.name);
     printf("Enter Age: ");
     scanf("%d", &user.age);
-    fprintf(file, "%d %s %d\n", user.id, user.name, user.age);
+    fprintf(file, "%s %s %d\n", user.id, user.name, user.age);
     fclose(file);
     printf("User added successfully!\n");
 }
@@ -79,15 +79,15 @@ void listUsers() {
     }
 
     printf("\nUsers\n");
-    while (fscanf(file, "%d %s %d", &user.id, user.name, &user.age) == 3) {
-        printf("ID: %d, Name: %s, Age: %d\n", user.id, user.name, user.age);
+    while (fscanf(file, "%s %s %d", user.id, user.name, &user.age) == 3) {
+        printf("ID: %s, Name: %s, Age: %d\n", user.id, user.name, user.age);
     }
 
     fclose(file);
 }
 
 void modifyUser() {
-    int idToUpdate, found = 0;
+    char idToUpdate[15], found = 0;
     User user;
     FILE *file = fopen(FILENAME, "r");
     FILE *tempFile = fopen("temp.txt", "w");
@@ -98,10 +98,10 @@ void modifyUser() {
     }
 
     printf("Enter User ID to modify: ");
-    scanf("%d", &idToUpdate);
+    scanf("%s", idToUpdate);
 
-    while (fscanf(file, "%d %s %d", &user.id, user.name, &user.age) == 3) {
-        if (user.id == idToUpdate) {
+    while (fscanf(file, "%s %s %d",user.id, user.name, &user.age) == 3) {
+        if (strcmp(user.id,idToUpdate)==0) {
             found = 1;
             printf("Enter New Name: ");
     		scanf(" %[^\n]s", user.name);
@@ -109,7 +109,7 @@ void modifyUser() {
     		scanf("%d", &user.age);
 
         }
-        fprintf(tempFile, "%d %s %d\n", user.id, user.name, user.age);
+        fprintf(tempFile, "%s %s %d\n", user.id, user.name, user.age);
     }
 
     fclose(file);
@@ -121,12 +121,12 @@ void modifyUser() {
         printf("User modified successfully!\n");
     } else {
         remove("temp.txt");
-        printf("User with ID %d not found.\n", idToUpdate);
+        printf("User with ID %s not found.\n", idToUpdate);
     }
 }
 
 void removeUser() {
-    int idToDelete, found = 0;
+    char idToDelete[15], found = 0;
     User user;
     FILE *file = fopen(FILENAME, "r");
     FILE *tempFile = fopen("temp.txt", "w");
@@ -137,13 +137,13 @@ void removeUser() {
     }
 
     printf("Enter User ID to remove: ");
-    scanf("%d", &idToDelete);
+    scanf("%s", idToDelete);
 
-while (fscanf(file, "%d %s %d", &user.id, user.name, &user.age) == 3) {
-        if (user.id == idToDelete) {
+while (fscanf(file, "%s %s %d", user.id, user.name, &user.age) == 3) {
+        if (strcmp(user.id,idToDelete)==0) {
             found = 1;
         } else {
-            fprintf(tempFile, "%d %s %d\n", user.id, user.name, user.age);
+            fprintf(tempFile, "%s %s %d\n", user.id, user.name, user.age);
         }
     }
 
@@ -156,7 +156,7 @@ while (fscanf(file, "%d %s %d", &user.id, user.name, &user.age) == 3) {
         printf("User removed successfully!\n");
     } else {
         remove("temp.txt");
-        printf("User with ID %d not found.\n", idToDelete);
+        printf("User with ID %s not found.\n", idToDelete);
     }
 }
 
