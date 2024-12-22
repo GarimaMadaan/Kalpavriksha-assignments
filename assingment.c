@@ -1,91 +1,125 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+#define MAX 100
 
-int evaluateExpression(const char* expression, int* error);
-int evaluateTerm(const char** expr, int* error);
-int isDigit(const char** expr, int* error);
+int precedence(char op)
+{
+    switch (op)
+    {
+    case '+':
+        return 1;
+    case '-':
+        return 0;
+    case '*':
+        return 2;
+    case '/':
+        return 3;
+    }
+    return -1;
+}
 
-int main() {
-    char expression[50];
-    int error = 0;
-    printf("Enter a mathematical expression: ");
-    fgets(expression, sizeof(expression), stdin);
+int operation(int first_digit, int second_digit, char operator)
+{
+    switch (operator)
+    {
+    case '*':
+        return first_digit * second_digit;
+    case '+':
+        return first_digit + second_digit;
+    case '-':
+        return first_digit - second_digit;
+    case '/':
+        if (second_digit == 0)
+        {
+            printf("Error dividing by zero\n");
+            exit(0);
+        }
+        return first_digit / second_digit;
+    default:
+        return 0;
+    }
+}
 
-    int result = evaluateExpression(expression, &error);
-
-    if (error) {
-        if (error == 1)
-            printf("Error: Division by zero.\n");
-        else
-            printf("Error: Invalid expression.\n");
-    } else {
-        printf("Result: %d\n", result);
+int is_space(char ch)
+{
+    if (ch == ' ' || ch == '\n')
+    {
+        return 1;
     }
     return 0;
 }
-int evaluateExpression(const char* expression, int* error) {
-    const char* expr = expression;
-    int result = evaluateTerm(&expr, error);
+int is_digit(char ch)
+{
+    if (ch >= '0' && ch <= '9')
+        return 1;
+    return 0;
+}
 
-    while (*expr != '\0' && *error == 0) {
-        char op = *expr;
+int string_length(char *str)
+{
+    int size = 0;
+    while (str[size] != '\0')
+        size++;
+    return size;
+}
 
-        if (op == '+' || op == '-') {
-            expr++;
-            int term = evaluateTerm(&expr, error);
-            if (op == '+') {
-                result += term;
-            } else {
-                result -= term;
+int evaluate(char *expression)
+{
+    int number_stack[MAX], number_stack_top = -1,i;
+    char operator_stack[MAX], operator_stack_top = -1;
+    for ( i = 0; expression[i] != '\0'; i++)
+    {
+        if (is_space(expression[i]))
+            continue;
+        if (is_digit(expression[i]))
+        {
+            int x = 0;
+            while (i < string_length(expression) && is_digit(expression[i]))
+            {
+                x = x * 10 + (expression[i++] - '0');
             }
-        } else if (isspace(op)) {
-            expr++;
-        } else {
-            *error = 2; 
-            return 0;
+            number_stack_top++;
+            number_stack[number_stack_top] = x;
+            i--;
         }
-    
-    return result;
-}
-
-int evaluateTerm(const char** expr, int* error) {
-    int result = isDigit(expr, error);
-    while (**expr != '\0' && *error == 0) {
-        char op = **expr;
-        if (op == '*' || op == '/') {
-            (*expr)++;
-            int digit = isDigit(expr, error);
-            if (op == '/') {
-                if (digit == 0) {
-                    *error = 1;
-                    return 0;
-                }
-                result /= digit;
-            } else {
-                result *= digit;
+        else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/')
+        {
+            while (operator_stack_top >= 0 && precedence(operator_stack[operator_stack_top]) >= precedence(expression[i]))
+            {
+                int y = number_stack[number_stack_top--];
+                int x = number_stack[number_stack_top--];
+                char op = operator_stack[operator_stack_top--];
+                number_stack_top++;
+                number_stack[number_stack_top] = operation(x, y, op);
             }
-        } else if (isspace(op)) {
-            (*expr)++;
-        } else {
-            break;
+            operator_stack_top++;
+            operator_stack[operator_stack_top] = expression[i];
+        }
+        else
+        {
+            printf("Error: Invalid expression.\n");
+            exit(0);
         }
     }
-    return result;
-}
-int isDigit(const char** expr, int* error) {
-    int num = 0;
 
-    while (isspace(**expr)) {
-        (*expr)++;
+    while (operator_stack_top >= 0)
+    {
+        int b = number_stack[number_stack_top--];
+        int a = number_stack[number_stack_top--];
+        char op = operator_stack[operator_stack_top--];
+        number_stack[++number_stack_top] = operation(a, b, op);
     }
-    if (isdigit(**expr)) {
-        while (isdigit(**expr)) {
-            num = num * 10 + (**expr - '0');
-            (*expr)++;
-        }
-    } else {
-        *error = 2; 
-    }
-    return num;
+
+    return number_stack[number_stack_top];
 }
+
+int main()
+{
+    char expression[MAX];
+    printf("Enter an expression: ");
+    fgets(expression, MAX, stdin);
+    int ans = evaluate(expression);
+    printf("Answer: %d\n", ans);
+    return 0;
+}
+0
