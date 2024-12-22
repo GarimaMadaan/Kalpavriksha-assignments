@@ -7,9 +7,9 @@ int precedence(char op)
     switch (op)
     {
     case '+':
-        return 1;
-    case '-':
         return 0;
+    case '-':
+        return 1;
     case '*':
         return 2;
     case '/':
