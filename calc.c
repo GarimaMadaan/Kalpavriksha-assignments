@@ -122,4 +122,3 @@ int main()
     printf("Answer: %d\n", ans);
     return 0;
 }
-
