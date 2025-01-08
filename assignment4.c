@@ -57,8 +57,7 @@ int main() {
 
 
     printf("\nNumber of names starting with a vowel: %d\n", vowel_count);
-
-    // Output: Longest name
+    
     printf("The longest name: %s\n", longest_name);
 
     return 0;
