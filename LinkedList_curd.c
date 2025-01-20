@@ -57,7 +57,7 @@ void insertAtPosition(int position,int element){
         newNode->next = head;
         head = newNode;
     }
-    else if(position > count+1){
+    else if(position > count+1 ||position<=0){
         printf("Invalid Position\n");
         return;
     }
@@ -92,7 +92,7 @@ void updateAtPosition(int position,int element){
         count++;
     }
     temp = head;
-    if(position > count){
+    if(position > count ||position<=0){
         printf("Invalid Position\n");
         return;
     }
@@ -138,7 +138,7 @@ void deleteAtPosition(int position){
         count++;
     }
     temp = head;
-    if(position > count){
+    if(position > count ||position<=0){
         printf("Invalid Position\n");
         return;
     }
