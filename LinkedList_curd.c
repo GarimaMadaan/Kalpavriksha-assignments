@@ -209,8 +209,10 @@ int main(){
         case 8:scanf("%d",&position);
                deleteAtPosition(position);
                break;
-        case 9:countt();
-                break;                                                           
+        // case 9:countt();
+        //         break;  
+        default :printf("Invaldi Input\n");
+                return 0;
 
     }
    }
