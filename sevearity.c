@@ -7,6 +7,10 @@ typedef struct patients{
     struct patients *next;
 }Patients;
 
+typedef struct map{
+    int id;
+}Map; 
+
 void printList(Patients *head){
     Patients *temp = head;
     while(temp != NULL){
@@ -32,25 +36,51 @@ Patients* sort(Patients *head) {
     do {
         swapped = 0;
         ptr1 = head;
-
+        printList(head);
         while (ptr1->next != lptr) {
-            if (precedence(ptr1->severity) < precedence(ptr1->next->severity)) {
+            printList(head);
+            Patients *ptr=ptr1->next;
+            if (precedence(ptr1->severity) < precedence(ptr->severity)) {
+                printList(head);
                 int temp_id = ptr1->patient_id;
-                char *temp_severity = ptr1->severity;
+                char *temp_severity =(char*)malloc(100*sizeof(char));
+                strcpy(temp_severity,ptr1->severity);
 
-                ptr1->patient_id = ptr1->next->patient_id;
-                ptr1->severity = ptr1->next->severity;
+                ptr1->patient_id = ptr->patient_id;
+                strcpy(ptr1->severity,ptr->severity);
 
-                ptr1->next->patient_id = temp_id;
-                ptr1->next->severity = temp_severity;
-
+                ptr->patient_id = temp_id;
+                strcpy(ptr->severity,temp_severity);
                 swapped = 1;
             }
+
             ptr1 = ptr1->next;
+            
         }
+        
         lptr = ptr1;
     } while (swapped);
     return head;
+}
+int take_severity(Patients *patient,Patients*head,Patients*temp){
+    patient->severity = (char *)malloc(100 * sizeof(char));
+    scanf("%s", patient->severity);
+    if(strcmp(patient->severity,"Critical") == 0 || strcmp(patient->severity,"Serious") == 0 ||strcmp(patient->severity,"Stable") == 0 ){
+        patient->next=NULL;
+        if(head == NULL){
+            head= patient;
+            temp = patient;
+        }
+        else{
+            temp->next = patient;
+            temp = patient;
+        }
+        }
+        else{
+            printf("Invalid Input,Enter Severity again");
+            return 1;
+        }
+        return 0;
 }
 
 int main(){
@@ -61,25 +91,29 @@ int main(){
     Patients *head = NULL;
     Patients *temp = head; 
     getchar();
+    Map mp[100];
+    int index =0;
     for(int i =0;i<no_of_patients;i++){
 
         Patients *patient = (Patients*)malloc(sizeof(patient)); 
         scanf("%d",&patient->patient_id);
-        getchar();
-        patient->severity = (char *)malloc(100 * sizeof(char));
-        scanf("%s", patient->severity);
-        getchar();
-        if(head == NULL){
-            head= patient;
-            temp = patient;
+        int is_duplicate = 0;
+        for(int i=0;i<index;i++){
+            if(mp[i].id == patient->patient_id){
+                is_duplicate = 1;
+                break;
+            }
         }
-        else{
-            temp->next = patient;
-            temp = temp->next;
+        if(is_duplicate ==1){
+            printf("Duplicate id ,Enter Again ");
+            i--;
+            continue;
         }
+        mp[index++].id = patient->patient_id;
+        while(take_severity(patient,head,temp));
     }
-    // printList(head);
-    Patients*sortedHead = sort(head);
+    printList(head);
+    Patients* sortedHead = sort(head);
     printf("\n");
     printList(sortedHead);
 
