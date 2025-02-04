@@ -27,11 +27,9 @@ void enquqe(Passenger *queue,int *front,int *rear,int size){
     else{
         (*rear)++;
     }
-    printf("Enter passenger id : ");
-    scanf("%d",&queue[*rear].passeger_id);
-    printf("Enter passenger Category: ");
     char *category = (char *)malloc (15 * sizeof(char));
-    scanf("%s",category);
+    scanf(",%d,%[^,],\"%[^\"]\";",&queue[*rear].passeger_id,category,queue[*rear].name);
+    
     getchar();
     if(string_to_enum(category)== -1) {
         printf("Invalid Input\n");
@@ -40,10 +38,8 @@ void enquqe(Passenger *queue,int *front,int *rear,int size){
     else{
         queue[*rear].Category = string_to_enum(category);
     }
-    printf("Enter the name of the passenger : ");
-    scanf("%s",queue[*rear].name);
+    
 }
-
 void deque(Passenger * queue,int *front,int *rear,int size){
     if(*front == -1 && *rear == -1){
         printf("Queue is empty\n");
