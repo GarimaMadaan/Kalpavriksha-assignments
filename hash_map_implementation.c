@@ -133,7 +133,7 @@ int main()
     scanf("%d",&n);
     hashmap* mp=(hashmap*)malloc(sizeof(hashmap));
     initialize_hashmap(mp,n);
-    int operation,choice;
+    int choice;
     while(1)
     {
         printf("\nenter your choice\n");
