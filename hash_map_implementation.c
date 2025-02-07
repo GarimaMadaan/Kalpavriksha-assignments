@@ -118,9 +118,8 @@ void display(hashmap* mp)
             curr=curr->next;
             found=1;
         }
-        
-        printf("\n");
     }
+    printf("\n");
     if(found==0)
     {
         printf("map is empty\n");
